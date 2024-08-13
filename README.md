@@ -4,6 +4,7 @@ CREATE TABLE Tables (
     TableNumber INT NOT NULL,
     Capacity INT NOT NULL
 );
+</br>
 
 CREATE TABLE MenuItems (
     MenuItemID INT PRIMARY KEY IDENTITY(1,1),
@@ -12,7 +13,7 @@ CREATE TABLE MenuItems (
     Price DECIMAL(10, 2) NOT NULL,
     Category NVARCHAR(50) NOT NULL
 );
-
+</br>
 CREATE TABLE Orders (
     OrderID INT PRIMARY KEY IDENTITY(1,1),
     TableID INT FOREIGN KEY REFERENCES Tables(TableID),
@@ -20,7 +21,7 @@ CREATE TABLE Orders (
     TotalPrice DECIMAL(10, 2),
     OrderStatus NVARCHAR(50) NOT NULL
 );
-
+</br>
 CREATE TABLE OrderItems (
     OrderItemID INT PRIMARY KEY IDENTITY(1,1),
     OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
@@ -28,7 +29,7 @@ CREATE TABLE OrderItems (
     Quantity INT NOT NULL,
     ItemPrice DECIMAL(10, 2) NOT NULL
 );
-
+</br>
 CREATE TABLE Payments (
     PaymentID INT PRIMARY KEY IDENTITY(1,1),
     OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
