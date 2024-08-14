@@ -14,11 +14,11 @@ namespace restaurant_backend.Context
         {
 
         }
-        public DbSet<Table> Tables { get; set; }
-        public DbSet<MenuItem> MenuItems { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<Table> Tables { get; set; }
+        public virtual DbSet<MenuItem> MenuItems { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
 
     }
 
