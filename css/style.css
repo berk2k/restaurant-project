@@ -4,9 +4,20 @@
     font-style: normal;
 }
 
+body {
+
+    height: 100%;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0;
+    overflow-x: hidden;
+    /* Yatay kaydırmayı engeller */
+
+}
+
 .navbar {
     background-color: #41553d;
-    height: 100px;
+    height: 100px !important;
 }
 
 .navbar-brand {
@@ -55,13 +66,16 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    left: -20%;
     background-color: #efeee3;
     color: #41553d;
-    padding: 5px 10px;
+    padding: 3px 15px;
     font-weight: 700;
     white-space: nowrap;
-    border-radius: 4px;
+    border-radius: 2px;
+    width: 55px;
+    height: 30px;
+    margin: 4px;
 }
 
 .language-dropdown:hover .language-dropdown-menu {
@@ -80,9 +94,22 @@
     color: #b8b69a !important;
 }
 
-.dropdown-item {
+/* .dropdown-item {
     color: #efeee3;
 }
+
+.dropdown-menu .dropdown-item:hover {
+
+    color: #b8b69a !important;
+}
+
+.dropdown-item:focus,
+.dropdown-item:active {
+    background-color: transparent !important;
+    color: inherit !important;
+    outline: none !important;
+    box-shadow: none !important;
+} */
 
 .header-icons__social {
     font-size: 1.4rem;
@@ -101,4 +128,47 @@
 
 .dropdown-menu_language:hover {
     color: #b8b69a;
+}
+
+.carousel {
+    transform: translateY(100px);
+    height: calc(100vh - 100px);
+}
+
+.carousel-inner {
+    height: calc(100vh - 100px);
+}
+
+.carousel-item {
+    height: 100%;
+    width: 100vw;
+    display: inline-block;
+    object-fit: cover;
+
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: zoomInOut 5s ease-in-out infinite;
+}
+
+@keyframes zoomInOut {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.04);
+        /* Yakınlaşma */
+    }
+
+    100% {
+        transform: scale(1);
+        /* Orijinal boyut */
+    }
 }
