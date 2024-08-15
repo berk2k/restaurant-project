@@ -21,7 +21,7 @@ namespace restaurant_backend.Src.Services
             {
                 
                 string baseUrl = "https://www.example.com/table/";
-                string qrCodeContent = $"{baseUrl}{tableNumber}"; // Örneğin: https://www.example.com/table/5
+                string qrCodeContent = $"{baseUrl}{tableNumber}"; // Ex: https://www.example.com/table/5
 
                 
                 string qrCodeBase64 = GenerateQRCodeBase64(qrCodeContent);
@@ -107,26 +107,26 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                // Table'ı tableNumber ile bul
+                
                 var table = await _context.Tables
                     .Where(t => t.TableNumber == tableNumber)
                     .FirstOrDefaultAsync();
 
                 if (table == null)
                 {
-                    // Tablo bulunamazsa özel bir istisna fırlatın
+                    
                     throw new InvalidOperationException($"Table with number {tableNumber} not found.");
                 }
 
-                // Tabloyu sil
+                
                 _context.Tables.Remove(table);
 
-                // Değişiklikleri veritabanına kaydet
+                
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                // Hata yönetimi: uygun bir şekilde loglama veya özel istisna fırlatma
+                
                 throw new ApplicationException("An error occurred while deleting the table.", ex);
             }
         }
@@ -153,14 +153,14 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                // Geçerli siparişi bulmak için tablodan siparişi getir
+               
                 var currentOrder = await _context.Orders
-                    .Where(o => o.TableNumber == tableNumber && o.OrderStatus == "Pending") // "Pending" durumu örnektir, durumu kendi uygulamanıza göre uyarlayın
+                    .Where(o => o.TableNumber == tableNumber && o.OrderStatus == "Pending") 
                     .FirstOrDefaultAsync();
 
                 if (currentOrder == null)
                 {
-                    // Geçerli sipariş bulunamazsa null döndür
+                    
                     return null;
                 }
 
@@ -168,7 +168,7 @@ namespace restaurant_backend.Src.Services
             }
             catch (Exception ex)
             {
-                // Hata yönetimi: uygun bir şekilde loglama veya özel istisna fırlatma
+                
                 throw new ApplicationException("An error occurred while retrieving the current order.", ex);
             }
         }
@@ -178,7 +178,7 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                // Belirli bir masa numarasına sahip tüm siparişleri asenkron olarak al
+                
                 var orders = await _context.Orders
                     .Where(o => o.TableNumber == tableNumber)
                     .ToListAsync();
@@ -187,16 +187,35 @@ namespace restaurant_backend.Src.Services
             }
             catch (Exception ex)
             {
-                // Hata yönetimi: uygun bir şekilde loglama veya özel istisna fırlatma
+                
                 throw new ApplicationException("An error occurred while retrieving orders for the table.", ex);
             }
         }
 
 
-        public Task<Table> GetTableByIdAsync(int tableId)
+        public async Task<Table> GetTableByIdAsync(int tableId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                
+                var table = await _context.Tables
+                    .Where(t => t.TableID == tableId)
+                    .FirstOrDefaultAsync();
+
+                if (table == null)
+                {
+                    throw new KeyNotFoundException($"Table with ID {tableId} not found.");
+                }
+
+                return table;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new ApplicationException("An error occurred while retrieving the table by ID.", ex);
+            }
         }
+
 
         public async Task<string> GetTableStatusAsync(int tableNumber)
         {
@@ -291,7 +310,7 @@ namespace restaurant_backend.Src.Services
                     throw new InvalidOperationException($"Table with number {tableNumber} not found.");
                 }
 
-                // Tabloyu güncelle
+                
                 table.Capacity = newCapacity;
                 table.IsAvailable = isAvailable;
 
@@ -306,7 +325,7 @@ namespace restaurant_backend.Src.Services
 
         private string GenerateQRCodeBase64(string content)
         {
-            // QR kodu oluşturma işlemini burada yapıyoruz
+            
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
             {
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
