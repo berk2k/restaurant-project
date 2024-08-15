@@ -12,5 +12,7 @@ namespace restaurant_backend.Models
         public int Capacity { get; set; }
 
         public bool IsAvailable { get; set; }
+
+        public required string QrCode { get; set; }
     }
 }
