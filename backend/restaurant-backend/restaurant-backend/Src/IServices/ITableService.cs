@@ -1,5 +1,5 @@
 ﻿using restaurant_backend.Models;
-using restaurant_backend.Models.DTOs;
+using restaurant_backend.Models.DTOs.TableDTOS;
 
 namespace restaurant_backend.Src.IServices
 {

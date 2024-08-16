@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QRCoder;
 using restaurant_backend.Context;
 using restaurant_backend.Models;
-using restaurant_backend.Models.DTOs;
+using restaurant_backend.Models.DTOs.TableDTOS;
 using restaurant_backend.Src.IServices;
 
 namespace restaurant_backend.Src.Services
@@ -73,6 +73,7 @@ namespace restaurant_backend.Src.Services
             {
                 TableNumber = dto.TableNumber,
                 Capacity = dto.Capacity,
+                IsAvailable = true,
                 QrCode = GenerateQRCodeBase64("https://www.example.com/table/")
             };
 
