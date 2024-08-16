@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using restaurant_backend.Context;
+using restaurant_backend.Src.IServices;
+using restaurant_backend.Src.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<ITableService, TableService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
