@@ -12,5 +12,9 @@ namespace restaurant_backend.Models
         public string Description { get; set; }
         public double Price { get; set; }
         public string Category { get; set; }
+
+        public bool IsAvailable { get; set; }
+
+
     }
 }
