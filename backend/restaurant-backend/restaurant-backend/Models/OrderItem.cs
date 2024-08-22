@@ -17,7 +17,7 @@ namespace restaurant_backend.Models
         public int Quantity { get; set; }
         public decimal ItemPrice { get; set; }
 
-        //public Order Order { get; set; }
-        //public MenuItem MenuItem { get; set; }
+        public Order Order { get; set; }
+        public MenuItem MenuItem { get; set; }
     }
 }
