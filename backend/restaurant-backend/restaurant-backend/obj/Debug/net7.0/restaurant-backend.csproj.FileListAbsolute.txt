@@ -76,3 +76,9 @@ C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restauran
 C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\obj\Debug\net7.0\restaurant-backend.pdb
 C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\obj\Debug\net7.0\restaurant-backend.genruntimeconfig.cache
 C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\obj\Debug\net7.0\ref\restaurant-backend.dll
+C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\bin\Debug\net7.0\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\bin\Debug\net7.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\bin\Debug\net7.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+C:\Users\monster\Desktop\restaurant_project\restaurant-project\backend\restaurant-backend\restaurant-backend\bin\Debug\net7.0\Microsoft.Extensions.Primitives.dll

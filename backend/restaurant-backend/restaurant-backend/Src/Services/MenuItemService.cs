@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using restaurant_backend.Context;
 using restaurant_backend.Models;
 using restaurant_backend.Models.DTOs.MenuDTOS;
@@ -10,7 +11,12 @@ namespace restaurant_backend.Src.Services
     public class MenuItemService : IMenuItemService
     {
         private readonly RestaurantDbContext _context;
-        public MenuItemService(RestaurantDbContext context) { _context = context; }
+        private readonly IMemoryCache _cache;
+        public MenuItemService(RestaurantDbContext context, IMemoryCache cache)
+        {
+            _context = context; 
+            _cache = cache;
+        }
 
 
         public async Task AddMenuItemAsync(AddMenuItemRequestDTO dto)
@@ -125,16 +131,32 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                
-                var menuItems = await _context.MenuItems
-                    .Where(m => m.Category == category)
-                    .ToListAsync();
+                // Define a cache key
+                string cacheKey = $"MenuItems_{category}";
 
-                return menuItems;
+                // Try to get the data from the cache
+                if (!_cache.TryGetValue(cacheKey, out IEnumerable<MenuItem> cachedItems))
+                {
+                    // If the data is not in the cache, retrieve it from the database
+                    cachedItems = await _context.MenuItems
+                        .Where(mi => mi.Category == category)
+                        .ToListAsync();
+
+                    // Set cache options
+                    var cacheOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                        SlidingExpiration = TimeSpan.FromMinutes(2)
+                    };
+
+                    // Store the data in the cache
+                    _cache.Set(cacheKey, cachedItems, cacheOptions);
+                }
+
+                return cachedItems;
             }
             catch (Exception ex)
             {
-                
                 throw new ApplicationException("An error occurred while retrieving menu items by category.", ex);
             }
         }
