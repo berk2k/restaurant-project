@@ -15,6 +15,8 @@ namespace restaurant_backend.Models
         public string PaymentMethod { get; set; }
         public decimal AmountPaid { get; set; }
 
+        public bool IsRefunded { get; set; }
+
         //public Order Order { get; set; }
     }
 }
