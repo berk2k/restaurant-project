@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using QRCoder;
 using restaurant_backend.Context;
 using restaurant_backend.Models;
@@ -11,8 +12,11 @@ namespace restaurant_backend.Src.Services
     public class TableService : ITableService
     {
         private readonly RestaurantDbContext _context;
-        public TableService(RestaurantDbContext dbContext) {
+        private readonly IMemoryCache _cache;
+        public TableService(RestaurantDbContext dbContext, IMemoryCache memoryCache)
+        {
             _context = dbContext;
+            _cache = memoryCache;
         }
 
         public async Task AddQrCodeToTableAsync(int tableNumber)
@@ -137,17 +141,36 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                
-                var tables = await _context.Tables.ToListAsync();
+                // Define a cache key for all tables.
+                string cacheKey = "AllTables";
 
-                return tables;
+                // Try to get the tables from the cache.
+                if (!_cache.TryGetValue(cacheKey, out IEnumerable<Table> cachedTables))
+                {
+                    // If the tables are not found in the cache, retrieve them from the database.
+                    var tables = await _context.Tables.ToListAsync();
+
+                    // Define cache options, such as expiration.
+                    var cacheOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                        SlidingExpiration = TimeSpan.FromMinutes(2)
+                    };
+
+                    // Cache the tables for future use.
+                    _cache.Set(cacheKey, tables, cacheOptions);
+
+                    return tables;
+                }
+
+                return cachedTables;
             }
             catch (Exception ex)
             {
-                
                 throw new ApplicationException("An error occurred while retrieving tables.", ex);
             }
         }
+
 
 
         public async Task<Order> GetCurrentOrderForTableAsync(int tableNumber)
@@ -179,43 +202,81 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                
-                var orders = await _context.Orders
-                    .Where(o => o.TableNumber == tableNumber)
-                    .ToListAsync();
+                // Define a cache key for orders by table number.
+                string cacheKey = $"Orders_Table_{tableNumber}";
 
-                return orders;
+                // Try to get the orders from the cache.
+                if (!_cache.TryGetValue(cacheKey, out IEnumerable<Order> cachedOrders))
+                {
+                    // If the orders are not found in the cache, retrieve them from the database.
+                    var orders = await _context.Orders
+                        .Where(o => o.TableNumber == tableNumber)
+                        .ToListAsync();
+
+                    // Define cache options, such as expiration.
+                    var cacheOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                        SlidingExpiration = TimeSpan.FromMinutes(2)
+                    };
+
+                    // Cache the orders for future use.
+                    _cache.Set(cacheKey, orders, cacheOptions);
+
+                    return orders;
+                }
+
+                return cachedOrders;
             }
             catch (Exception ex)
             {
-                
                 throw new ApplicationException("An error occurred while retrieving orders for the table.", ex);
             }
         }
+
 
 
         public async Task<Table> GetTableByIdAsync(int tableId)
         {
             try
             {
-                
-                var table = await _context.Tables
-                    .Where(t => t.TableID == tableId)
-                    .FirstOrDefaultAsync();
+                // Define a cache key for the specific table.
+                string cacheKey = $"Table_{tableId}";
 
-                if (table == null)
+                // Try to get the table from the cache.
+                if (!_cache.TryGetValue(cacheKey, out Table cachedTable))
                 {
-                    throw new KeyNotFoundException($"Table with ID {tableId} not found.");
+                    // If the table is not found in the cache, retrieve it from the database.
+                    var table = await _context.Tables
+                        .Where(t => t.TableID == tableId)
+                        .FirstOrDefaultAsync();
+
+                    if (table == null)
+                    {
+                        throw new KeyNotFoundException($"Table with ID {tableId} not found.");
+                    }
+
+                    // Define cache options, such as expiration.
+                    var cacheOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                        SlidingExpiration = TimeSpan.FromMinutes(2)
+                    };
+
+                    // Cache the table for future use.
+                    _cache.Set(cacheKey, table, cacheOptions);
+
+                    return table;
                 }
 
-                return table;
+                return cachedTable;
             }
             catch (Exception ex)
             {
-                
                 throw new ApplicationException("An error occurred while retrieving the table by ID.", ex);
             }
         }
+
 
 
         public async Task<string> GetTableStatusAsync(int tableNumber)
