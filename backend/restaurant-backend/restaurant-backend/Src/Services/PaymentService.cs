@@ -3,16 +3,19 @@ using restaurant_backend.Context;
 using restaurant_backend.Models;
 using restaurant_backend.Src.IServices;
 using restaurant_backend.Models.DTOs.PaymentDTOS;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace restaurant_backend.Src.Services
 {
     public class PaymentService : IPaymentService
     {
         private readonly RestaurantDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public PaymentService(RestaurantDbContext context)
+        public PaymentService(RestaurantDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         public async Task ProcessPaymentAsync(CreatePaymentRequestDTO paymentDto)
@@ -41,14 +44,39 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                
-                return await _context.Payments.ToListAsync();
+                // Define a cache key for storing and retrieving the payments.
+                string cacheKey = "AllPayments";
+
+                // Try to get the list of payments from the cache.
+                if (!_cache.TryGetValue(cacheKey, out IEnumerable<Payment> cachedPayments))
+                {
+                    // If the cache does not contain the payments, retrieve them from the database.
+                    var payments = await _context.Payments.ToListAsync();
+
+                    // Define cache options such as expiration.
+                    var cacheOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10), // Cache duration
+                        SlidingExpiration = TimeSpan.FromMinutes(2) // Time to extend cache on each access
+                    };
+
+                    // Cache the payments for future use.
+                    _cache.Set(cacheKey, payments, cacheOptions);
+
+                    // Return the payments from the database.
+                    return payments;
+                }
+
+                // Return the cached payments if they exist.
+                return cachedPayments;
             }
             catch (Exception ex)
             {
+                // Handle any exceptions and wrap them in an ApplicationException.
                 throw new ApplicationException("An error occurred while retrieving all payments.", ex);
             }
         }
+
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)
         {
