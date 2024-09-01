@@ -8,6 +8,7 @@ namespace restaurant_backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TableID { get; set; }
+        
         public int TableNumber { get; set; }
         public int Capacity { get; set; }
 

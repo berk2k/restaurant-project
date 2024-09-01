@@ -71,22 +71,30 @@ namespace restaurant_backend.Src.Services
 
         public async Task AddTableAsync(AddTableRequestDTO dto)
         {
+            // Check if the TableNumber is unique
+            bool tableNumberExists = await _context.Tables
+                .AnyAsync(t => t.TableNumber == dto.TableNumber);
 
+            if (tableNumberExists)
+            {
+                throw new ApplicationException($"A table with TableNumber {dto.TableNumber} already exists.");
+            }
 
             var newTable = new Table
             {
                 TableNumber = dto.TableNumber,
                 Capacity = dto.Capacity,
                 IsAvailable = true,
-                QrCode = GenerateQRCodeBase64("https://www.example.com/table/")
+                QrCode = "qr"//GenerateQRCodeBase64("https://www.example.com/table/")
             };
 
-            
+            // Add the new table
             await _context.Tables.AddAsync(newTable);
 
-            
+            // Save changes to the database
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<bool> CheckTableAvailabilityAsync(int tableNumber)
         {
