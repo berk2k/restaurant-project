@@ -25,8 +25,8 @@ namespace restaurant_backend.Src.Services
             {
                 Name = dto.Name,
                 Description = dto.Description,
-                IsAvailable = true,
                 Price = dto.Price,
+                ImageUrl = dto.ImageUrl,
                 Category = dto.Category
             };
 
@@ -170,6 +170,7 @@ namespace restaurant_backend.Src.Services
                     cachedItems = await _context.MenuItems
                         .Where(mi => mi.Category == category)
                         .ToListAsync();
+                    
 
                     // Set cache options
                     var cacheOptions = new MemoryCacheEntryOptions
