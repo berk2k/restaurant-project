@@ -13,6 +13,7 @@ namespace restaurant_backend.Models
         public double Price { get; set; }
         public string Category { get; set; }
 
+        public string ImageUrl { get; set; }
         public bool IsAvailable { get; set; }
 
 
