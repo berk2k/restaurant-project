@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using restaurant_backend.Context;
 using restaurant_backend.Models;
 using restaurant_backend.Models.DTOs.MenuDTOS;
-using restaurant_backend.Models.DTOs.TableDTOS;
 using restaurant_backend.Src.IServices;
 
 namespace restaurant_backend.Src.Services
@@ -11,13 +9,11 @@ namespace restaurant_backend.Src.Services
     public class MenuItemService : IMenuItemService
     {
         private readonly RestaurantDbContext _context;
-        private readonly IMemoryCache _cache;
-        public MenuItemService(RestaurantDbContext context, IMemoryCache cache)
-        {
-            _context = context; 
-            _cache = cache;
-        }
 
+        public MenuItemService(RestaurantDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task AddMenuItemAsync(AddMenuItemRequestDTO dto)
         {
@@ -30,10 +26,7 @@ namespace restaurant_backend.Src.Services
                 Category = dto.Category
             };
 
-
             await _context.MenuItems.AddAsync(newItem);
-
-
             await _context.SaveChangesAsync();
         }
 
@@ -41,56 +34,30 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
-                
                 var menuItem = await _context.MenuItems
                     .Where(m => m.MenuItemID == menuItemID)
                     .FirstOrDefaultAsync();
 
-                
                 if (menuItem == null)
                 {
                     throw new KeyNotFoundException($"Menu item with ID {menuItemID} not found.");
                 }
 
-                
                 _context.MenuItems.Remove(menuItem);
-
-               
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                
                 throw new ApplicationException("An error occurred while deleting the menu item.", ex);
             }
         }
-
 
         public async Task<IEnumerable<MenuItem>> GetAllMenuItemsAsync()
         {
             try
             {
-                // Define a cache key
-                string cacheKey = "AllMenuItems";
-
-                // Try to get the data from the cache
-                if (!_cache.TryGetValue(cacheKey, out IEnumerable<MenuItem> cachedMenuItems))
-                {
-                    // If the data is not in the cache, retrieve it from the database
-                    cachedMenuItems = await _context.MenuItems.ToListAsync();
-
-                    // Set cache options
-                    var cacheOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
-                        SlidingExpiration = TimeSpan.FromMinutes(2)
-                    };
-
-                    // Store the data in the cache
-                    _cache.Set(cacheKey, cachedMenuItems, cacheOptions);
-                }
-
-                return cachedMenuItems;
+                var menuItems = await _context.MenuItems.ToListAsync();
+                return menuItems;
             }
             catch (Exception ex)
             {
@@ -98,13 +65,10 @@ namespace restaurant_backend.Src.Services
             }
         }
 
-
-
         public async Task<IEnumerable<MenuItem>> GetAvailableMenuItemsAsync()
         {
             try
             {
-                
                 var availableMenuItems = await _context.MenuItems
                     .Where(m => m.IsAvailable)
                     .ToListAsync();
@@ -113,40 +77,24 @@ namespace restaurant_backend.Src.Services
             }
             catch (Exception ex)
             {
-               
                 throw new ApplicationException("An error occurred while retrieving available menu items.", ex);
             }
         }
-
 
         public async Task<MenuItem> GetMenuItemByIdAsync(int menuItemID)
         {
             try
             {
-                string cacheKey = $"MenuItem_{menuItemID}";
+                var menuItem = await _context.MenuItems
+                    .Where(m => m.MenuItemID == menuItemID)
+                    .FirstOrDefaultAsync();
 
-                if (!_cache.TryGetValue(cacheKey, out MenuItem cachedMenuItem))
+                if (menuItem == null)
                 {
-                    var menuItem = await _context.MenuItems
-                        .Where(m => m.MenuItemID == menuItemID)
-                        .FirstOrDefaultAsync();
-
-                    if (menuItem == null)
-                    {
-                        throw new KeyNotFoundException($"Menu item with ID {menuItemID} not found.");
-                    }
-
-                    var cacheOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
-                        SlidingExpiration = TimeSpan.FromMinutes(2)
-                    };
-
-                    _cache.Set(cacheKey, menuItem, cacheOptions);
-                    return menuItem;
+                    throw new KeyNotFoundException($"Menu item with ID {menuItemID} not found.");
                 }
 
-                return cachedMenuItem;
+                return menuItem;
             }
             catch (Exception ex)
             {
@@ -154,36 +102,15 @@ namespace restaurant_backend.Src.Services
             }
         }
 
-
-
         public async Task<IEnumerable<MenuItem>> GetMenuItemsByCategoryAsync(string category)
         {
             try
             {
-                // Define a cache key
-                string cacheKey = $"MenuItems_{category}";
+                var menuItems = await _context.MenuItems
+                    .Where(mi => mi.Category == category)
+                    .ToListAsync();
 
-                // Try to get the data from the cache
-                if (!_cache.TryGetValue(cacheKey, out IEnumerable<MenuItem> cachedItems))
-                {
-                    // If the data is not in the cache, retrieve it from the database
-                    cachedItems = await _context.MenuItems
-                        .Where(mi => mi.Category == category)
-                        .ToListAsync();
-                    
-
-                    // Set cache options
-                    var cacheOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
-                        SlidingExpiration = TimeSpan.FromMinutes(2)
-                    };
-
-                    // Store the data in the cache
-                    _cache.Set(cacheKey, cachedItems, cacheOptions);
-                }
-
-                return cachedItems;
+                return menuItems;
             }
             catch (Exception ex)
             {
@@ -191,35 +118,27 @@ namespace restaurant_backend.Src.Services
             }
         }
 
-
         public async Task ToggleAvailabilityAsync(int menuItemID)
         {
             try
             {
-                
                 var menuItem = await _context.MenuItems
                     .Where(m => m.MenuItemID == menuItemID)
                     .FirstOrDefaultAsync();
 
-                
                 if (menuItem == null)
                 {
                     throw new KeyNotFoundException($"Menu item with ID {menuItemID} not found.");
                 }
 
-                
                 menuItem.IsAvailable = !menuItem.IsAvailable;
-
-                
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                
                 throw new ApplicationException("An error occurred while toggling the availability of the menu item.", ex);
             }
         }
-
 
         public async Task UpdateMenuItemNameAsync(int menuItemID, string newName)
         {
@@ -308,8 +227,5 @@ namespace restaurant_backend.Src.Services
                 throw new ApplicationException("An error occurred while updating the menu item category.", ex);
             }
         }
-
-        
-
     }
 }
