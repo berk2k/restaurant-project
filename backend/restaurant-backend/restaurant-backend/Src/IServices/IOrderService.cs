@@ -1,11 +1,12 @@
 ﻿using restaurant_backend.Models;
+using restaurant_backend.Models.DTOs.OrderDTOS;
 
 namespace restaurant_backend.Src.IServices
 {
     public interface IOrderService
     {
         // Creates a new order
-        Task CreateOrderAsync(Order newOrder);
+        Task CreateOrderAsync(AddOrderDTO dto);
 
         // Retrieves an order by its ID
         Task<Order> GetOrderByIdAsync(int orderId);

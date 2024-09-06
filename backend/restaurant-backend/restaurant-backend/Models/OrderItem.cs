@@ -14,8 +14,12 @@ namespace restaurant_backend.Models
 
         [ForeignKey("MenuItem")]
         public int MenuItemID { get; set; }
+
+        public string ItemName { get; set; }
+
+        public string ItemImg { get; set; }
         public int Quantity { get; set; }
-        public decimal ItemPrice { get; set; }
+        public double ItemPrice { get; set; }
 
         public Order Order { get; set; }
         public MenuItem MenuItem { get; set; }

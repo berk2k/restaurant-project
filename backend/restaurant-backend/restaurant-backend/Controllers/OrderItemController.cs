@@ -24,9 +24,45 @@ namespace restaurant_backend.Controllers
         {
             try
             {
+                
+
                 await _orderItemService.AddOrderItemAsync(dto);
                 _response.IsSuccess = true;
                 _response.ErrorMessage = "Order item added successfully.";
+                return Ok(_response);
+            }
+            catch (ApplicationException ex)
+            {
+              
+                _response.IsSuccess = false;
+                _response.ErrorMessage = ex.Message;
+                return BadRequest(_response);
+            }
+            catch (Exception ex)
+            {
+                
+                _response.IsSuccess = false;
+                _response.ErrorMessage = "An unexpected error occurred.";
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+
+        [HttpGet("by-item/{id:int}")]
+        public async Task<IActionResult> GetOrderItemByItemId(int id)
+        {
+            try
+            {
+                var orderItem = await _orderItemService.GetOrderItemsByItemIdAsync(id);
+                if (orderItem == null)
+                {
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = "Order item not found.";
+                    return NotFound(_response);
+                }
+
+                _response.IsSuccess = true;
+                _response.Result = orderItem;
                 return Ok(_response);
             }
             catch (ApplicationException ex)
@@ -193,7 +229,7 @@ namespace restaurant_backend.Controllers
         {
             try
             {
-                var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(orderID: 0);
+                var orderItems = await _orderItemService.GetAllOrderItemsAsync();
                 _response.IsSuccess = true;
                 _response.Result = orderItems;
                 return Ok(_response);
