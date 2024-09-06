@@ -19,21 +19,57 @@ namespace restaurant_backend.Src.Services
         {
             try
             {
+                // Retrieve menu item details
+                var menuItem = await GetMenuItemDetailsAsync(dto.MenuItemID);
+
                 var orderItem = new OrderItem
                 {
-                    OrderID = dto.OrderID,
+                    OrderID = 4, // Placeholder for OrderID, to be updated later
+                    ItemName = menuItem.Name,  // Set from menu item details
                     MenuItemID = dto.MenuItemID,
-                    Quantity = dto.Quantity
+                    ItemPrice = menuItem.Price, // Set from menu item details
+                    Quantity = dto.Quantity,
+                    MenuItem = menuItem,
+                    ItemImg = menuItem.ImageUrl
                 };
 
                 await _context.OrderItems.AddAsync(orderItem);
                 await _context.SaveChangesAsync();
             }
+            catch (DbUpdateException dbEx)
+            {
+                // Handle database-related exceptions
+                throw new ApplicationException("An error occurred while adding the order item to the database.", dbEx);
+            }
             catch (Exception ex)
             {
-                throw new ApplicationException("An error occurred while adding the order item.", ex);
+                // Handle other types of exceptions
+                throw new ApplicationException("An unexpected error occurred while adding the order item.", ex);
             }
         }
+
+        public async Task<MenuItem> GetMenuItemDetailsAsync(int menuItemID)
+        {
+            try
+            {
+                var menuItem = await _context.MenuItems
+                    .Where(m => m.MenuItemID == menuItemID)
+                    .FirstOrDefaultAsync();
+
+                if (menuItem == null)
+                {
+                    throw new ApplicationException("Menu item not found.");
+                }
+
+                return menuItem;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("An error occurred while retrieving menu item details.", ex);
+            }
+        }
+
+
 
         public async Task<bool> CheckIfOrderItemExistsAsync(int orderItemID)
         {
@@ -64,6 +100,11 @@ namespace restaurant_backend.Src.Services
             {
                 throw new ApplicationException("An error occurred while deleting the order item.", ex);
             }
+        }
+
+        public async Task<List<OrderItem>> GetAllOrderItemsAsync()
+        {
+            return await _context.OrderItems.ToListAsync();
         }
 
         public async Task<OrderItem> GetOrderItemByIdAsync(int orderItemID)
@@ -160,5 +201,28 @@ namespace restaurant_backend.Src.Services
                 throw new ApplicationException("An error occurred while updating the order item quantity.", ex);
             }
         }
+
+        public async Task<IEnumerable<OrderItem>> GetOrderItemsByItemIdAsync(int itemID)
+        {
+            try
+            {
+                var orderItems = await _context.OrderItems
+                    .Where(oi => oi.MenuItemID == itemID)
+                    .ToListAsync();
+
+                if (orderItems == null)
+                {
+                    throw new KeyNotFoundException($"No order items found for order ID {itemID}.");
+                }
+
+                return orderItems;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("An error occurred while retrieving order items by order ID.", ex);
+            }
+        }
+
+        
     }
 }

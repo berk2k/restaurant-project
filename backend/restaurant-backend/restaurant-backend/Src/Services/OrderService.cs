@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using restaurant_backend.Context;
 using restaurant_backend.Models;
+using restaurant_backend.Models.DTOs.OrderDTOS;
 using restaurant_backend.Src.IServices;
 
 namespace restaurant_backend.Src.Services
@@ -14,11 +16,29 @@ namespace restaurant_backend.Src.Services
             _context = context;
         }
 
-        public async Task CreateOrderAsync(Order newOrder)
+        public async Task CreateOrderAsync(AddOrderDTO newOrder)
         {
             try
             {
-                await _context.Orders.AddAsync(newOrder);
+                // Get the TableID asynchronously
+                int? tableId = await GetTableIdByTableNumberAsync(newOrder.TableNumber);
+
+                // Check if TableID is null
+                if (!tableId.HasValue)
+                {
+                    throw new ApplicationException("Table not found.");
+                }
+
+                Order order = new Order
+                {
+                    TableNumber = newOrder.TableNumber,
+                    TableID = tableId.Value,  // Use the TableID from the result
+                    TotalPrice = newOrder.TotalPrice,
+                    OrderStatus = newOrder.OrderStatus,
+                    OrderTime = DateTime.Now
+                };
+
+                await _context.Orders.AddAsync(order);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -26,6 +46,35 @@ namespace restaurant_backend.Src.Services
                 throw new ApplicationException("An error occurred while creating the order.", ex);
             }
         }
+
+        public async Task<int> GetTableIdByTableNumberAsync(int tableNumber)
+        {
+            try
+            {
+                // Ensure the tableNumber is valid
+                if (tableNumber <= 0)
+                {
+                    throw new ArgumentException("TableNumber must be a positive integer.", nameof(tableNumber));
+                }
+
+                // Query the database for the table with the given TableNumber
+                var table = await _context.Tables
+                    .Where(t => t.TableNumber == tableNumber)
+                    .FirstOrDefaultAsync();
+
+                // Return the TableID if found, otherwise null
+                return table.TableID;
+            }
+            catch (Exception ex)
+            {
+                // Handle any potential exceptions
+                throw new ApplicationException("An error occurred while retrieving the TableID.", ex);
+            }
+        }
+
+
+
+
 
         public async Task<Order> GetOrderByIdAsync(int orderId)
         {

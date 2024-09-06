@@ -1,4 +1,5 @@
-﻿using restaurant_backend.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using restaurant_backend.Models;
 using restaurant_backend.Models.DTOs.OrderDTOS;
 
 namespace restaurant_backend.Src.IServices
@@ -20,6 +21,10 @@ namespace restaurant_backend.Src.IServices
         Task<bool> CheckIfOrderItemExistsAsync(int orderItemID);
 
         Task UpdateOrderItemDetailsAsync(int orderItemID, OrderItem updatedOrderItem);
+        Task<List<OrderItem>> GetAllOrderItemsAsync();
+
+        Task<IEnumerable<OrderItem>> GetOrderItemsByItemIdAsync(int itemID);
+
 
         //Task<IEnumerable<OrderItem>> GetPopularOrderItemsAsync();
     }

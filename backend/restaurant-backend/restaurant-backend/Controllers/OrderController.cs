@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using restaurant_backend.Models;
+using restaurant_backend.Models.DTOs.OrderDTOS;
 using restaurant_backend.Src.IServices;
 
 namespace restaurant_backend.Controllers
@@ -18,7 +19,7 @@ namespace restaurant_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] Order order)
+        public async Task<IActionResult> CreateOrder([FromBody] AddOrderDTO order)
         {
             try
             {
