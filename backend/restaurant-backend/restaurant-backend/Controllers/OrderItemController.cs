@@ -171,11 +171,11 @@ namespace restaurant_backend.Controllers
         }
 
         [HttpPut("update-quantity/{id:int}")]
-        public async Task<IActionResult> UpdateOrderItemQuantity(int id, [FromBody] int newQuantity)
+        public async Task<IActionResult> UpdateOrderItemQuantity(int id, [FromBody] UpdateQuantityRequestDTO dto)
         {
             try
             {
-                await _orderItemService.UpdateOrderItemQuantityAsync(id, newQuantity);
+                await _orderItemService.UpdateOrderItemQuantityAsync(id, dto.newQuantity);
                 _response.IsSuccess = true;
                 _response.ErrorMessage = "Order item quantity updated successfully.";
                 return Ok(_response);
