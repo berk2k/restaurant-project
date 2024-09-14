@@ -25,6 +25,8 @@ namespace restaurant_backend.Src.IServices
 
         Task<IEnumerable<OrderItem>> GetOrderItemsByItemIdAsync(int itemID);
 
+        Task ClearBasketAsync();
+
 
         //Task<IEnumerable<OrderItem>> GetPopularOrderItemsAsync();
     }

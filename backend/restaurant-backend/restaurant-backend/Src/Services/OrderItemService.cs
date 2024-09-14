@@ -107,6 +107,26 @@ namespace restaurant_backend.Src.Services
             return await _context.OrderItems.ToListAsync();
         }
 
+        public async Task ClearBasketAsync()
+        {
+            try
+            {
+                var orderItems = _context.OrderItems.ToList();
+
+                if (orderItems.Count > 0)
+                {
+                    // Sepetteki öğeleri veritabanından sil
+                    _context.OrderItems.RemoveRange(orderItems);
+                    _context.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("An error occured cleaning basket.", ex);
+            }
+        }
+
         public async Task<OrderItem> GetOrderItemByIdAsync(int orderItemID)
         {
             try
