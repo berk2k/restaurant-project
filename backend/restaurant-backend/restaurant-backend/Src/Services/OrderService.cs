@@ -103,9 +103,12 @@ namespace restaurant_backend.Src.Services
             }
             catch (Exception ex)
             {
+                // Add logging here for better debugging
+                Console.WriteLine($"Error: {ex.Message}");
                 throw new ApplicationException("An error occurred while retrieving all orders.", ex);
             }
         }
+
 
         public async Task<IEnumerable<Order>> GetOrdersByTableNumberAsync(int tableNumber)
         {

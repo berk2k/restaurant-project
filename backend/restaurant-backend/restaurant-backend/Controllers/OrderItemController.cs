@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using restaurant_backend.Models.DTOs.OrderDTOS;
 using restaurant_backend.Models;
 using restaurant_backend.Src.IServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace restaurant_backend.Controllers
 {
@@ -241,5 +242,26 @@ namespace restaurant_backend.Controllers
                 return BadRequest(_response);
             }
         }
+
+        [HttpDelete("clear-basket")]
+        public IActionResult ClearBasket()
+        {
+            
+
+            try
+            {
+                _orderItemService.ClearBasketAsync();
+                _response.IsSuccess = true;
+                _response.Result = "Basket cleared succesfully";
+                return Ok(_response);
+            }
+            catch(ApplicationException ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessage = ex.Message;
+                return BadRequest(_response);
+            }
+        }
+
     }
 }
