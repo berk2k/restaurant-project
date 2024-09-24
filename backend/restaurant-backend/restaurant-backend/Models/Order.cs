@@ -17,6 +17,10 @@ namespace restaurant_backend.Models
         public double TotalPrice { get; set; }
         public string OrderStatus { get; set; }
 
+        public string ItemName { get; set; }
+
+        public int Quantity { get; set; }
+
         
        
     }

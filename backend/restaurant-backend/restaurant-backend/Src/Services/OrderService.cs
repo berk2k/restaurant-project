@@ -35,6 +35,8 @@ namespace restaurant_backend.Src.Services
                     TableID = tableId.Value,  // Use the TableID from the result
                     TotalPrice = newOrder.TotalPrice,
                     OrderStatus = newOrder.OrderStatus,
+                    ItemName = newOrder.ItemName,
+                    Quantity = newOrder.Quantity,
                     OrderTime = DateTime.Now
                 };
 
