@@ -30,10 +30,23 @@ builder.Services.AddMemoryCache();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<RestaurantDbContext>(option =>
+// Retrieve the connection string from environment variables
+var connectionString = Environment.GetEnvironmentVariable("RestaurantProjectDefaultSQLConnection");
+Console.WriteLine($"Connection String: {connectionString}");
+
+// Configure the DbContext to use the connection string from the environment variable
+builder.Services.AddDbContext<RestaurantDbContext>(options =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("The environment variable 'RestaurantProjectDefaultSQLConnection' is not set.");
+    }
+    options.UseSqlServer(connectionString);
 });
+//builder.Services.AddDbContext<RestaurantDbContext>(option =>
+//{
+//    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+//});
 
 var app = builder.Build();
 
@@ -53,3 +66,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+
+
