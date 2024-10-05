@@ -19,6 +19,7 @@ namespace restaurant_backend.Context
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PaymentOrder> PaymentOrders { get; set; }
 
     }
 
