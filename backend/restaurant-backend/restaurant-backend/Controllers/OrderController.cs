@@ -172,8 +172,9 @@ namespace restaurant_backend.Controllers
                 if (success)
                 {
                     _response.IsSuccess = true;
-                    _response.StatusCode = System.Net.HttpStatusCode.NoContent;
-                    return NoContent();
+                    _response.IsSuccess = true;
+                    _response.ErrorMessage = "Order deleted successfully.";
+                    return Ok(_response);
                 }
                 else
                 {

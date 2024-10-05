@@ -94,45 +94,7 @@ namespace restaurant_backend.Src.Controllers
             }
         }
 
-        [HttpGet("order/{orderId}")]
-        public async Task<IActionResult> GetPaymentsByOrderId(int orderId)
-        {
-            try
-            {
-                var payments = await _paymentService.GetPaymentsByOrderIdAsync(orderId);
-                _response.IsSuccess = true;
-                _response.StatusCode = System.Net.HttpStatusCode.OK;
-                _response.Result = payments;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessage = "An error occurred while retrieving payments for the order: " + ex.Message;
-                _response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                return StatusCode(500, _response);
-            }
-        }
-
-        [HttpGet("total/{orderId}")]
-        public async Task<IActionResult> GetTotalPaymentsForOrder(int orderId)
-        {
-            try
-            {
-                var total = await _paymentService.GetTotalPaymentsForOrderAsync(orderId);
-                _response.IsSuccess = true;
-                _response.StatusCode = System.Net.HttpStatusCode.OK;
-                _response.Result = total;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessage = "An error occurred while calculating the total payments for the order: " + ex.Message;
-                _response.StatusCode = System.Net.HttpStatusCode.InternalServerError;
-                return StatusCode(500, _response);
-            }
-        }
+        
 
         [HttpPost("refund/{id}")]
         public async Task<IActionResult> RefundPayment(int id)

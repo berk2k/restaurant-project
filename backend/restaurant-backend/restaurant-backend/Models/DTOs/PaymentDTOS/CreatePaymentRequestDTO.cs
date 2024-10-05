@@ -2,11 +2,13 @@
 {
     public class CreatePaymentRequestDTO
     {
-        public int OrderID { get; set; }
+        
         public DateTime PaymentTime { get; set; }
         public string PaymentMethod { get; set; }
-        public decimal AmountPaid { get; set; }
+        public double AmountPaid { get; set; }
 
         public bool IsRefunded { get; set; }
+
+        public List<int> OrderIDs { get; set; }
     }
 }

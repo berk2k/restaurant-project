@@ -7,10 +7,10 @@ namespace restaurant_backend.Src.IServices
     {
         Task ProcessPaymentAsync(CreatePaymentRequestDTO paymentRequestDTO);
         Task<Payment> GetPaymentByIdAsync(int paymentId);
-        Task<IEnumerable<Payment>> GetPaymentsByOrderIdAsync(int orderId);
+        
         Task<IEnumerable<Payment>> GetAllPaymentsAsync();
         Task<bool> RefundPaymentAsync(int paymentId);
 
-        Task<decimal> GetTotalPaymentsForOrderAsync(int orderId);
+        
     }
 }
