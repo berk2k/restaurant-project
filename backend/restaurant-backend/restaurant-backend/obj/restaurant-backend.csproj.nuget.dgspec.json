@@ -1,24 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\monster\\Desktop\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj": {}
+    "C:\\Users\\monster\\Desktop\\.net projects\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\monster\\Desktop\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj": {
+    "C:\\Users\\monster\\Desktop\\.net projects\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\monster\\Desktop\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj",
+        "projectUniqueName": "C:\\Users\\monster\\Desktop\\.net projects\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj",
         "projectName": "restaurant-backend",
-        "projectPath": "C:\\Users\\monster\\Desktop\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj",
+        "projectPath": "C:\\Users\\monster\\Desktop\\.net projects\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\restaurant-backend.csproj",
         "packagesPath": "C:\\Users\\monster\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\monster\\Desktop\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\obj\\",
+        "outputPath": "C:\\Users\\monster\\Desktop\\.net projects\\restaurant_project\\restaurant-project\\backend\\restaurant-backend\\restaurant-backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\monster\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -26,8 +26,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -43,8 +43,8 @@
         }
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
@@ -62,7 +62,7 @@
             },
             "Microsoft.Extensions.Caching.Memory": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[9.0.4, )"
             },
             "QRCoder": {
               "target": "Package",
@@ -96,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

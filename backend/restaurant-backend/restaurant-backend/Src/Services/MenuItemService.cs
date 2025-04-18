@@ -17,6 +17,18 @@ namespace restaurant_backend.Src.Services
 
         public async Task AddMenuItemAsync(AddMenuItemRequestDTO dto)
         {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new ArgumentException("Menu item name cannot be empty.");
+
+            if (dto.Price < 0)
+                throw new ArgumentException("Menu item price cannot be negative.");
+
+            if (string.IsNullOrWhiteSpace(dto.Category))
+                throw new ArgumentException("Menu item category cannot be empty.");
+
             var newItem = new MenuItem
             {
                 Name = dto.Name,

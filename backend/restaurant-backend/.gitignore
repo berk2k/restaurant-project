@@ -1,0 +1,28 @@
+## Build artifacts
+bin/
+obj/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Rider
+.idea/
+
+## User-specific files
+*.userosscache
+*.sln.docstates
+
+## Logs
+*.log
+
+## OS-specific
+.DS_Store
+Thumbs.db
+
+## Others
+*.vsidx
