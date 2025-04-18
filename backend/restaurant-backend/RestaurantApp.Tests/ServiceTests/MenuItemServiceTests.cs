@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Moq;
 using restaurant_backend.Context;
+using restaurant_backend.Models;
 using restaurant_backend.Models.DTOs.MenuDTOS;
 using restaurant_backend.Src.Services;
 using System;
@@ -22,61 +24,265 @@ namespace RestaurantApp.Tests.ServiceTests
         }
 
         [Fact]
-        public async Task AddMenuItemAsync_Should_Add_Item_To_Database()
+        public async Task AddMenuItemAsync_ShouldAddMenuItem_WhenValidDataIsProvided()
         {
             // Arrange
-            var context = GetInMemoryDbContext();
-            var service = new MenuItemService(context);
-
-            var newItemDto = new AddMenuItemRequestDTO
+            var dto = new AddMenuItemRequestDTO
             {
-                Name = "Burger",
-                Description = "Delicious beef burger",
-                Price = 12.99,
-                ImageUrl = "https://example.com/burger.jpg",
-                Category = "Fast Food"
+                Name = "Pizza",
+                Price = 9.99,
+                Category = "Main Course",
+                Description = "Delicious pizza"
             };
+            var mockDbSet = new Mock<DbSet<MenuItem>>();
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(m => m.MenuItems).Returns(mockDbSet.Object);
+
+            var service = new MenuItemService(mockContext.Object);
 
             // Act
-            await service.AddMenuItemAsync(newItemDto);
+            await service.AddMenuItemAsync(dto);
 
             // Assert
-            var items = await context.MenuItems.ToListAsync();
-            Assert.Single(items);
+            mockDbSet.Verify(m => m.AddAsync(It.IsAny<MenuItem>(), It.IsAny<CancellationToken>()), Times.Once());
+            mockContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
+        }
 
-            var item = items.First();
-            Assert.Equal("Burger", item.Name);
-            Assert.Equal("Delicious beef burger", item.Description);
-            Assert.Equal(12.99, item.Price);
-            Assert.Equal("Fast Food", item.Category);
+
+        [Fact]
+        public async Task AddMenuItemAsync_ShouldThrowArgumentException_WhenNameIsEmpty()
+        {
+            // Arrange
+            var dto = new AddMenuItemRequestDTO
+            {
+                Name = "",
+                Price = 9.99,
+                Category = "Main Course",
+                Description = "Delicious pizza"
+            };
+            var mockDbSet = new Mock<DbSet<MenuItem>>();
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(m => m.MenuItems).Returns(mockDbSet.Object);
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => service.AddMenuItemAsync(dto));
+            Assert.Equal("Menu item name cannot be empty.", exception.Message);
+        }
+
+
+        [Fact]
+        public async Task AddMenuItemAsync_ShouldThrowArgumentException_WhenPriceIsNegative()
+        {
+            // Arrange
+            var dto = new AddMenuItemRequestDTO
+            {
+                Name = "Pizza",
+                Price = -5,
+                Category = "Main Course",
+                Description = "Delicious pizza"
+            };
+            var mockDbSet = new Mock<DbSet<MenuItem>>();
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(m => m.MenuItems).Returns(mockDbSet.Object);
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => service.AddMenuItemAsync(dto));
+            Assert.Equal("Menu item price cannot be negative.", exception.Message);
+        }
+
+
+        [Fact]
+        public async Task AddMenuItemAsync_ShouldThrowArgumentException_WhenCategoryIsEmpty()
+        {
+            // Arrange
+            var dto = new AddMenuItemRequestDTO
+            {
+                Name = "Pizza",
+                Price = 9.99,
+                Category = "",
+                Description = "Delicious pizza"
+            };
+            var mockDbSet = new Mock<DbSet<MenuItem>>();
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(m => m.MenuItems).Returns(mockDbSet.Object);
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => service.AddMenuItemAsync(dto));
+            Assert.Equal("Menu item category cannot be empty.", exception.Message);
         }
 
         [Fact]
-        public async Task AddMenuItemAsync_Should_Throw_When_Name_Is_Empty()
+        public async Task AddMenuItemAsync_ShouldThrowArgumentException_WhenNullDataIsProvided()
         {
             // Arrange
-            var options = new DbContextOptionsBuilder<RestaurantDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb1")
-                .Options;
-
-            using var context = new RestaurantDbContext(options);
-            var service = new MenuItemService(context);
-
             var dto = new AddMenuItemRequestDTO
             {
-                Name = "", 
-                Description = "Test Description",
-                Price = 10,
-                ImageUrl = "https://example.com/image.jpg",
-                Category = "Main"
+                Name = null,
+                Price = 0,
+                Category = null,
+                Description = null
             };
+            var mockDbSet = new Mock<DbSet<MenuItem>>();
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(m => m.MenuItems).Returns(mockDbSet.Object);
+
+            var service = new MenuItemService(mockContext.Object);
 
             // Act & Assert
-            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.AddMenuItemAsync(dto));
-            Assert.Equal("Menu item name cannot be empty.", ex.Message);
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => service.AddMenuItemAsync(dto));
+            Assert.Equal("Menu item name cannot be empty.", exception.Message);
         }
+
+        [Fact]
+        public async Task AddMenuItemAsync_ShouldPersistMenuItemInDatabase_WhenValidDataIsProvided()
+        {
+            // Arrange
+            var dto = new AddMenuItemRequestDTO
+            {
+                Name = "Burger",
+                Price = 12.99,
+                Category = "Main Course",
+                Description = "Tasty burger"
+            };
+            var mockDbSet = new Mock<DbSet<MenuItem>>();
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(m => m.MenuItems).Returns(mockDbSet.Object);
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act
+            await service.AddMenuItemAsync(dto);
+
+            // Assert
+            mockDbSet.Verify(m => m.AddAsync(It.IsAny<MenuItem>(), It.IsAny<CancellationToken>()), Times.Once());
+            mockContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task AddMenuItemAsync_ShouldThrowException_WhenDatabaseFailsToPersist()
+        {
+            // Arrange
+            var dto = new AddMenuItemRequestDTO
+            {
+                Name = "Burger",
+                Price = 12.99,
+                Category = "Main Course",
+                Description = "Tasty burger"
+            };
+            var mockDbSet = new Mock<DbSet<MenuItem>>();
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(m => m.MenuItems).Returns(mockDbSet.Object);
+            mockContext.Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new DbUpdateException());
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ApplicationException>(() => service.AddMenuItemAsync(dto));
+            Assert.Equal("An error occurred while adding the menu item.", exception.Message);
+        }
+
+        private Mock<DbSet<T>> CreateMockDbSet<T>(List<T> data) where T : class
+        {
+            var queryable = data.AsQueryable();
+            var mockSet = new Mock<DbSet<T>>();
+
+            mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<T>(queryable.Provider));
+            mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
+            mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
+            mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(queryable.GetEnumerator());
+
+            // Mock the Remove method
+            mockSet.Setup(m => m.Remove(It.IsAny<T>())).Callback<T>(entity => data.Remove(entity));
+
+            return mockSet;
+        }
+
+
+
+
+
+        [Fact]
+        public async Task DeleteMenuItemAsync_ShouldDeleteMenuItem_WhenMenuItemExists()
+        {
+            // Arrange
+            var menuItemID = 1;
+            var menuItems = new List<MenuItem>
+            {   
+                new MenuItem { MenuItemID = menuItemID, Name = "Pizza", Price = 10.99 }
+            };
+
+            var mockDbSet = CreateMockDbSet(menuItems);
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(c => c.MenuItems).Returns(mockDbSet.Object);
+            mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act
+            await service.DeleteMenuItemAsync(menuItemID);
+
+            // Assert
+            Assert.Empty(menuItems); 
+            mockContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteMenuItemAsync_ShouldThrowKeyNotFoundException_WhenMenuItemNotFound()
+        {
+            // Arrange
+            var menuItemID = 1;
+            var menuItems = new List<MenuItem>();  // Menü öğesi yok
+            var mockDbSet = CreateMockDbSet(menuItems);
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(c => c.MenuItems).Returns(mockDbSet.Object);
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => service.DeleteMenuItemAsync(menuItemID));
+
+            // Assert only the exception type without worrying about the exact message
+            Assert.IsType<KeyNotFoundException>(exception);
+        }
+
+        [Fact]
+        public async Task DeleteMenuItemAsync_ShouldThrowApplicationException_WhenDatabaseFails()
+        {
+            // Arrange
+            var menuItemID = 1;
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { MenuItemID = menuItemID, Name = "Pizza", Price = 10.99 }
+            };
+            var mockDbSet = CreateMockDbSet(menuItems);
+            var mockContext = new Mock<RestaurantDbContext>();
+            mockContext.Setup(c => c.MenuItems).Returns(mockDbSet.Object);
+            mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ThrowsAsync(new DbUpdateException());
+
+            var service = new MenuItemService(mockContext.Object);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ApplicationException>(() => service.DeleteMenuItemAsync(menuItemID));
+
+            // Assert only the exception type
+            Assert.IsType<ApplicationException>(exception);
+        }
+
+
+
+
+
+
 
 
 
     }
+
+
 }

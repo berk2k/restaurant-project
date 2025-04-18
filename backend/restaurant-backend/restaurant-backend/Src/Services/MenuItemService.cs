@@ -17,9 +17,6 @@ namespace restaurant_backend.Src.Services
 
         public async Task AddMenuItemAsync(AddMenuItemRequestDTO dto)
         {
-            if (dto == null)
-                throw new ArgumentNullException(nameof(dto));
-
             if (string.IsNullOrWhiteSpace(dto.Name))
                 throw new ArgumentException("Menu item name cannot be empty.");
 
@@ -29,17 +26,31 @@ namespace restaurant_backend.Src.Services
             if (string.IsNullOrWhiteSpace(dto.Category))
                 throw new ArgumentException("Menu item category cannot be empty.");
 
-            var newItem = new MenuItem
+            
+            
+            try
             {
-                Name = dto.Name,
-                Description = dto.Description,
-                Price = dto.Price,
-                ImageUrl = dto.ImageUrl,
-                Category = dto.Category
-            };
+                var newItem = new MenuItem
 
-            await _context.MenuItems.AddAsync(newItem);
-            await _context.SaveChangesAsync();
+                 {
+
+                    Name = dto.Name,
+                    Description = dto.Description,
+                    Price = dto.Price,
+                    ImageUrl = dto.ImageUrl,
+                    Category = dto.Category
+                };
+
+
+                await _context.MenuItems.AddAsync(newItem);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new ApplicationException("An error occurred while adding the menu item.", ex);
+            }
+            
+
         }
 
         public async Task DeleteMenuItemAsync(int menuItemID)
@@ -58,7 +69,7 @@ namespace restaurant_backend.Src.Services
                 _context.MenuItems.Remove(menuItem);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
                 throw new ApplicationException("An error occurred while deleting the menu item.", ex);
             }
