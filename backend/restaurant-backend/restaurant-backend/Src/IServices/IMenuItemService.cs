@@ -5,7 +5,7 @@ namespace restaurant_backend.Src.IServices
 {
     public interface IMenuItemService
     {
-        public Task<IEnumerable<MenuItem>> GetAllMenuItemsAsync();
+        public Task<IEnumerable<MenuItem>> GetAllMenuItemsAsync(int page, int pageSize);
         public Task<MenuItem> GetMenuItemByIdAsync(int menuItemID);
 
         public Task AddMenuItemAsync(AddMenuItemRequestDTO dto);

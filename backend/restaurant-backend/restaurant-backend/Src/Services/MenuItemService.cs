@@ -75,18 +75,26 @@ namespace restaurant_backend.Src.Services
             }
         }
 
-        public async Task<IEnumerable<MenuItem>> GetAllMenuItemsAsync()
+        public async Task<IEnumerable<MenuItem>> GetAllMenuItemsAsync(int page, int pageSize)
         {
             try
             {
-                var menuItems = await _context.MenuItems.ToListAsync();
-                return menuItems;
+                if (page <= 0 || pageSize <= 0)
+                {
+                    throw new ArgumentException("Page and pageSize must be greater than zero.");
+                }
+
+                return await _context.MenuItems
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("An error occurred while retrieving all menu items.", ex);
+                throw new ApplicationException("An error occurred while retrieving paginated menu items.", ex);
             }
         }
+
 
         public async Task<IEnumerable<MenuItem>> GetAvailableMenuItemsAsync()
         {
@@ -106,23 +114,21 @@ namespace restaurant_backend.Src.Services
 
         public async Task<MenuItem> GetMenuItemByIdAsync(int menuItemID)
         {
-            try
-            {
-                var menuItem = await _context.MenuItems
-                    .Where(m => m.MenuItemID == menuItemID)
-                    .FirstOrDefaultAsync();
 
-                if (menuItem == null)
-                {
-                    throw new KeyNotFoundException($"Menu item with ID {menuItemID} not found.");
-                }
+            var menuItem = await _context.MenuItems
+                .Where(m => m.MenuItemID == menuItemID)
+                .FirstOrDefaultAsync();
 
-                return menuItem;
-            }
-            catch (Exception ex)
+            if (menuItem == null)
             {
-                throw new ApplicationException("An error occurred while retrieving the menu item by ID.", ex);
+                throw new KeyNotFoundException($"Menu item with ID {menuItemID} not found.");
             }
+
+            return menuItem;
+            
+            
+            
+            
         }
 
         public async Task<IEnumerable<MenuItem>> GetMenuItemsByCategoryAsync(string category)

@@ -134,14 +134,20 @@ namespace restaurant_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMenuItems()
+        public async Task<IActionResult> GetAllMenuItems([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var items = await _menuService.GetAllMenuItemsAsync();
+                var items = await _menuService.GetAllMenuItemsAsync(page, pageSize);
                 _response.Result = items;
-                _response.ErrorMessage = "All menu items retrieved successfully.";
+                _response.ErrorMessage = "Menu items retrieved successfully.";
                 return Ok(_response);
+            }
+            catch (ApplicationException ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessage = ex.Message;
+                return BadRequest(_response);
             }
             catch (Exception ex)
             {
@@ -150,6 +156,7 @@ namespace restaurant_backend.Controllers
                 return StatusCode(500, _response);
             }
         }
+
 
         [HttpPut("{menuItemID}/name")]
         public async Task<IActionResult> UpdateMenuItemName(int menuItemID, [FromBody] string newName)
