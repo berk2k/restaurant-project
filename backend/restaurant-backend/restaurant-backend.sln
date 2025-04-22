@@ -7,13 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "restaurant-backend", "resta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantApp.Tests", "RestaurantApp.Tests\RestaurantApp.Tests.csproj", "{9FFF7B3A-D9F5-4057-976A-C8F9F719DA93}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{25FFA64F-3898-4C53-9530-3CCBC7B7FDF2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflow", "workflow", "{42EF1F1C-84F2-4FA9-9613-CBC2FDD29B5F}"
-	ProjectSection(SolutionItems) = preProject
-		dotnet-ci.yml = dotnet-ci.yml
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,9 +24,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{42EF1F1C-84F2-4FA9-9613-CBC2FDD29B5F} = {25FFA64F-3898-4C53-9530-3CCBC7B7FDF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A2C557D-26AD-45EC-AA9B-E62810405324}
