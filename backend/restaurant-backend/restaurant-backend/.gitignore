@@ -1,4 +1,7 @@
 ﻿appsettings.json
 .vs/
+Dockerfile
+docker-compose.yml
+script.sql
 
 

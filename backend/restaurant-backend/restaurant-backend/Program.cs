@@ -31,7 +31,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Retrieve the connection string from environment variables
-var connectionString = Environment.GetEnvironmentVariable("RestaurantProjectDefaultSQLConnection");
+//var connectionString = Environment.GetEnvironmentVariable("RestaurantProjectDefaultSQLConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultSQLConnection");
+
 Console.WriteLine($"Connection String: {connectionString}");
 
 // Configure the DbContext to use the connection string from the environment variable
