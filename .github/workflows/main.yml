@@ -32,7 +32,9 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/restaurant-backend:latest ./backend/restaurant-backend/restaurant-backend
+        run: |
+          ls -la ./backend/restaurant-backend/restaurant-backend/
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/restaurant-backend:latest -f ./backend/restaurant-backend/restaurant-backend/Dockerfile ./backend/restaurant-backend/restaurant-backend
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/restaurant-backend:latest
