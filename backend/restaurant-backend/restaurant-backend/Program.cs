@@ -53,11 +53,15 @@ builder.Services.AddDbContext<RestaurantDbContext>(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    //app.UseDeveloperExceptionPage();
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 //app.UseHttpsRedirection();
 // Use CORS middleware
@@ -66,6 +70,8 @@ app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", () => Results.Ok("API running!"));
 
 app.Run();
 
