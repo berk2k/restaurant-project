@@ -1,6 +1,27 @@
-﻿appsettings.json
+﻿
+bin/
+obj/
+*.user
+*.vspscc
+
+
+appsettings.*.json
+!appsettings.Example.json
+*.env
+*.pfx
+*.p12
+*.key
+
+
+logs/
+*.log
+
+
 .vs/
-docker-compose.yml
-script.sql
+.vscode/
+.idea/
+
+
+.dockerignore
 
 
