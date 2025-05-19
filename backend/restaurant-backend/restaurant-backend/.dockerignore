@@ -1,0 +1,10 @@
+﻿**/bin
+**/obj
+**/*.user
+**/*.suo
+**/*.env
+**/*.pfx
+**/appsettings.Development.json
+**/appsettings.json
+**/secrets.json
+
