@@ -33,10 +33,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          ls -la ./backend/restaurant-backend/restaurant-backend/
+          
           docker build -t ${{ secrets.DOCKER_USERNAME }}/restaurant-backend:latest -f ./backend/restaurant-backend/restaurant-backend/Dockerfile ./backend/restaurant-backend/restaurant-backend
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/restaurant-backend:latest
-
-
+        
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }} --silent
