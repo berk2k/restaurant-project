@@ -18,6 +18,10 @@ CI/CD (GitHub Actions)
 
 Cloud Deployment
 
+.Net Core
+
+MSSQL
+
 ---
 
 # 📦 Deployment Pipeline
